@@ -17,6 +17,13 @@ import numpy as np
 import os
 import config as c
 import nltk
+import logging
+
+
+# some desperate attempt to stop logging in either spyder or the terminal/cmi
+logger = logging.getLogger( "tensorflow" )
+logger.propagate = False
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
 n_categories = c.n_categories
 n_words = c.n_words
@@ -36,22 +43,25 @@ dictionary = dictionary_file.read()
 dictionary = dictionary.split(",")
 dictionary_file.close()
 
-
-encoded_prediction = c.one_hot_encode(predict_tokenized, dictionary)[:n_input]
-
-p = []
-#flatten the data array
-for w in encoded_prediction:
-    p += w
-
-encoded_prediction = p
-encoded_prediction = np.array([encoded_prediction])
-
-json_file =  open('model.json', 'r')
-json_model = json_file.read()
-json_file.close()
-model = model_from_json(json_model)
-model.load_weights('weight.h5')
-
-prediction = model.predict(encoded_prediction, verbose=0)
-print(c.get_category(prediction))
+try:
+    encoded_prediction = c.one_hot_encode(predict_tokenized, dictionary)[:n_input]
+    
+    p = []
+    #flatten the data array
+    for w in encoded_prediction:
+        p += w
+    
+    encoded_prediction = p
+    encoded_prediction = np.array([encoded_prediction])
+    
+    json_file =  open('model.json', 'r')
+    json_model = json_file.read()
+    json_file.close()
+    model = model_from_json(json_model)
+    model.load_weights('weight.h5')
+    
+    prediction = model.predict(encoded_prediction, verbose=0)
+    cat = c.get_category(prediction)
+    print('{"code": 200, "language":"'+cat+'"}')
+except:
+    print('{"code": 400, "message":"Bad request"}')
