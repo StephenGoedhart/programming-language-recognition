@@ -1,0 +1,1 @@
+let,var,struct,class,func,Int,Double,Float,String,Char,Void,typealias,//,:,{,},break,case,chan,const,continue,default,defer,else,fallthrough,for,Go,Goto,if,import
