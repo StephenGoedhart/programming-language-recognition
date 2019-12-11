@@ -53,5 +53,5 @@ json_file.close()
 model = model_from_json(json_model)
 model.load_weights('weight.h5')
 
-prediction = model.predict(encoded_prediction, verbose=1)
+prediction = model.predict(encoded_prediction, verbose=0)
 print(c.get_category(prediction))
